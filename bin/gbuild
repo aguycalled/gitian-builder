@@ -111,7 +111,8 @@ EOF" if build_desc["sudo"] and @options[:allow_sudo]
 #{r["source"]}
 EOF"
       if r["key"] and r["name"]
-        system! "on-target -u root wget -O - #{r["key"]} 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/#{r["name"]}.gpg >> var/install.log 2>&1"
+        system! "on-target -u root wget -O /tmp/#{r["name"]}.gpg #{r["key"]} >> var/install.log 2>&1"
+        system! "on-target -u root apt-key add /tmp/#{r["name"]}.gpg >> var/install.log 2>&1"
       end
     end
   end
