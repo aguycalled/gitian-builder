@@ -106,7 +106,10 @@ EOF" if build_desc["sudo"] and @options[:allow_sudo]
 
   info "Updating apt-get repository (log in var/install.log)"
   system! "on-target -u root apt-get update >> var/install.log 2>&1"
-  
+
+  info "Installing additional packages (log in var/install.log)"
+  system! "on-target -u root -e DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install #{build_desc["packages"].join(" ")} >> var/install.log 2>&1"
+
   if build_desc["repositories"]
     info "Adding repositories to the sources list (log in var/install.log)"
     system! "on-target -u root -e DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install gnupg2 >> var/install.log 2>&1"
@@ -122,10 +125,7 @@ EOF"
     info "Updating new apt-get repositories (log in var/install.log)"
     system! "on-target -u root apt-get update >> var/install.log 2>&1"
   end
-
-  info "Installing additional packages (log in var/install.log)"
-  system! "on-target -u root -e DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install #{build_desc["packages"].join(" ")} >> var/install.log 2>&1"
-
+  
   if build_desc["repositories"]
     for r in build_desc["repositories"]
       info "Installing additional packages from repository #{r["distribution"]} (log in var/install.log)"
